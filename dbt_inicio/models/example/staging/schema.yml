@@ -1,0 +1,148 @@
+version: 2
+
+sources:
+  - name: raw
+    schema: public
+    tables:
+      - name: raw_customers
+        description: "Tabela bruta de cadastro de clientes"
+        columns:
+          - name: customer_id
+            description: "Identificador único do cliente"
+          - name: full_name
+            description: "Nome completo do cliente"
+          - name: email
+            description: "Endereço de e-mail do cliente"
+          - name: signup_date
+            description: "Data de cadastro do cliente no sistema"
+
+      - name: raw_orders
+        description: "Pedidos realizados por clientes"
+        columns:
+          - name: order_id
+            description: "Identificador único do pedido"
+          - name: customer_id
+            description: "Identificador do cliente que realizou o pedido"
+          - name: order_date
+            description: "Data do pedido"
+          - name: status
+            description: "Status do pedido (e.g. delivered, pending, cancelled)"
+
+      - name: raw_order_items
+        description: "Itens contidos em cada pedido"
+        columns:
+          - name: order_item_id
+            description: "Identificador único do item de pedido"
+          - name: order_id
+            description: "Referência ao pedido"
+          - name: product_id
+            description: "Produto vendido"
+          - name: quantity
+            description: "Quantidade do produto no pedido"
+
+      - name: raw_products
+        description: "Catálogo de produtos disponíveis"
+        columns:
+          - name: product_id
+            description: "Identificador do produto"
+          - name: product_name
+            description: "Nome do produto"
+          - name: category
+            description: "Categoria do produto"
+          - name: price
+            description: "Preço unitário do produto"
+
+      - name: raw_payments
+        description: "Pagamentos realizados pelos pedidos"
+        columns:
+          - name: payment_id
+            description: "Identificador do pagamento"
+          - name: order_id
+            description: "Pedido associado ao pagamento"
+          - name: payment_method
+            description: "Método utilizado (e.g. cartão, boleto, pix)"
+          - name: payment_date
+            description: "Data de pagamento"
+          - name: amount
+            description: "Valor pago"
+
+models:
+  - name: stg_customers
+    description: "Tratamento de dados de clientes"
+    columns:
+      - name: customer_id
+        description: "Identificador do cliente"
+        tests:
+          - not_null
+          - unique
+      - name: email
+        description: "Email do cliente"
+        tests:
+          - not_null
+      - name: signup_date
+        description: "Data de cadastro"
+        tests:
+          - not_null
+
+  - name: stg_orders
+    description: "Tratamento de pedidos"
+    columns:
+      - name: order_id
+        tests:
+          - not_null
+          - unique
+      - name: customer_id
+        tests:
+          - not_null
+          - relationships:
+              to: ref('stg_customers')
+              field: customer_id
+      - name: status
+        tests:
+          - accepted_values:
+              values: ['delivered', 'pending', 'cancelled']
+
+  - name: stg_products
+    description: "Tratamento de produtos"
+    columns:
+      - name: product_id
+        tests:
+          - not_null
+          - unique
+      - name: price
+        tests:
+          - not_null
+
+  - name: stg_order_items
+    description: "Tratamento dos itens de pedidos"
+    columns:
+      - name: order_item_id
+        tests:
+          - not_null
+          - unique
+      - name: order_id
+        tests:
+          - not_null
+          - relationships:
+              to: ref('stg_orders')
+              field: order_id
+      - name: product_id
+        tests:
+          - not_null
+          - relationships:
+              to: ref('stg_products')
+              field: product_id
+
+  - name: stg_payments
+    description: "Tratamento dos pagamentos"
+    columns:
+      - name: payment_id
+        tests:
+          - not_null
+          - unique
+      - name: order_id
+        tests:
+          - not_null
+          - relationships:
+              to: ref('stg_orders')
+              field: order_id

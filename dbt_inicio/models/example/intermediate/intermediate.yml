@@ -1,0 +1,46 @@
+version: 2
+
+models:
+  - name: int_orders_enriched
+    description: "Modelo intermediário que consolida pedidos com itens, produtos e pagamentos"
+    columns:
+      - name: order_id
+        description: "Identificador do pedido"
+      - name: customer_id
+        description: "Cliente que realizou o pedido"
+      - name: order_date
+        description: "Data em que o pedido foi feito"
+      - name: status
+        description: "Status atual do pedido"
+      - name: product_id
+        description: "Produto incluído no pedido"
+      - name: product_name
+        description: "Nome do produto"
+      - name: category
+        description: "Categoria do produto"
+      - name: quantity
+        description: "Quantidade do item no pedido"
+      - name: price
+        description: "Preço unitário do produto"
+      - name: total_item_value
+        description: "Valor total do item no pedido (preço x quantidade)"
+      - name: payment_method
+        description: "Método de pagamento utilizado"
+      - name: payment_date
+        description: "Data em que o pagamento foi registrado"
+      - name: payment_amount
+        description: "Valor pago referente ao pedido"
+
+  - name: int_customer_order_summary
+    description: "Resumo por cliente contendo total de pedidos, valor gasto e ticket médio"
+    columns:
+      - name: customer_id
+        description: "Identificador do cliente"
+      - name: full_name
+        description: "Nome do cliente"
+      - name: total_orders
+        description: "Número total de pedidos realizados pelo cliente"
+      - name: total_spent
+        description: "Valor total gasto pelo cliente em pedidos"
+      - name: avg_order_value
+        description: "Valor médio gasto por pedido (ticket médio)"

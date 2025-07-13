@@ -1,0 +1,30 @@
+version: 2
+
+models:
+  - name: mart_category_revenue
+    description: "Relatório analítico com receita total por categoria de produto, considerando apenas pedidos entregues"
+    columns:
+      - name: category
+        description: "Categoria do produto vendido"
+      - name: total_revenue
+        description: "Receita total gerada pela categoria (somatório do valor dos itens)"
+      - name: total_orders
+        description: "Número de pedidos únicos que incluíram produtos da categoria"
+      - name: total_items_sold
+        description: "Quantidade total de produtos vendidos na categoria"
+
+  - name: mart_customer_ranking
+    description: "Ranking de clientes baseado no valor total gasto, número de pedidos e ticket médio"
+    columns:
+      - name: customer_id
+        description: "Identificador do cliente"
+      - name: full_name
+        description: "Nome do cliente"
+      - name: total_orders
+        description: "Quantidade total de pedidos realizados pelo cliente"
+      - name: total_spent
+        description: "Valor total gasto pelo cliente em todos os pedidos"
+      - name: avg_order_value
+        description: "Média de valor por pedido (ticket médio)"
+      - name: customer_rank
+        description: "Posição do cliente no ranking geral, com base no total gasto"
